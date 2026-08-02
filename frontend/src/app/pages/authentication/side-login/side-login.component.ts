@@ -1,10 +1,10 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { MaterialModule } from 'src/app/material.module';
-import { FormsModule } from '@angular/forms';
-import { ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { AuthService } from 'src/app/services/auth.service';
 
 @Component({
   selector: 'app-side-login',
@@ -13,10 +13,15 @@ import { ReactiveFormsModule } from '@angular/forms';
 })
 export class AppSideLoginComponent {
 
-  constructor( private router: Router) {}
+  private router = inject(Router);
+  private auth = inject(AuthService);
+  private snackBar = inject(MatSnackBar);
+
+  loading = false;
 
   form = new FormGroup({
-    uname: new FormControl('', [Validators.required, Validators.minLength(6)]),
+    tenantId: new FormControl('', [Validators.required]),
+    uname: new FormControl('', [Validators.required, Validators.email]),
     password: new FormControl('', [Validators.required]),
   });
 
@@ -25,7 +30,18 @@ export class AppSideLoginComponent {
   }
 
   submit() {
-    // console.log(this.form.value);
-    this.router.navigate(['/']);
+    if (this.form.invalid) return;
+    this.loading = true;
+    const { tenantId, uname, password } = this.form.value;
+    this.auth.login({ email: uname!, password: password!, tenantId: tenantId! }).subscribe({
+      next: () => {
+        this.loading = false;
+        this.router.navigate(['/dashboard']);
+      },
+      error: (err) => {
+        this.loading = false;
+        this.snackBar.open(err.error?.error || 'Login failed', 'Close', { duration: 3000 });
+      },
+    });
   }
 }

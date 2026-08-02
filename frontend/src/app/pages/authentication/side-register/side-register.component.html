@@ -9,51 +9,53 @@
             </a>
           </div>
 
-          <div class="row m-t-24 custom-row">
-            <div class="col-12 col-sm-6">
-              <button mat-stroked-button class="w-100">
-                <div class="d-flex align-items-center">
-                  <img src="/assets/images/svgs/google-icon.svg" alt="google" width="16" class="m-r-8" />
-                  Sign in with Google
-                </div>
-              </button>
-            </div>
-            <div class="col-12 col-sm-6">
-              <button mat-stroked-button class="w-100 d-flex align-items-center">
-                <div class="d-flex align-items-center">
-                  <img src="/assets/images/svgs/facebook-icon.svg" alt="facebook" width="40" class="m-r-4" />
-                  Sign in with FB
-                </div>
-              </button>
-            </div>
-          </div>
+          <div class="or-border m-t-30">Create your account</div>
 
-          <div class="or-border m-t-30">or sign up with</div>
+          <form class="m-t-30" [formGroup]="form" (ngSubmit)="submit()">
+            <mat-label class="f-s-14 f-w-600 m-b-12 d-block">Tenant ID</mat-label>
+            <mat-form-field appearance="outline" class="w-100" color="primary">
+              <input matInput formControlName="tenantId" placeholder="e.g. 14b8bff1-..." />
+              <mat-error *ngIf="f.tenantId.hasError('required')">Tenant ID is required</mat-error>
+            </mat-form-field>
 
-          <form class="m-t-30">
-            <mat-label class="f-s-14 f-w-600 m-b-12 d-block">Name</mat-label>
+            <mat-label class="f-s-14 f-w-600 m-b-12 d-block">Email</mat-label>
             <mat-form-field appearance="outline" class="w-100" color="primary">
-              <input matInput />
+              <input matInput formControlName="email" type="email" placeholder="you@acme.com" />
+              <mat-error *ngIf="f.email.hasError('required')">Email is required</mat-error>
+              <mat-error *ngIf="f.email.hasError('email')">Invalid email</mat-error>
             </mat-form-field>
-            <mat-label class="f-s-14 f-w-600 m-b-12 d-block">Email Adddress</mat-label>
-            <mat-form-field appearance="outline" class="w-100" color="primary">
-              <input matInput type="email" />
-            </mat-form-field>
-            <!-- password -->
+
+            <div class="row">
+              <div class="col-6">
+                <mat-label class="f-s-14 f-w-600 m-b-12 d-block">First Name</mat-label>
+                <mat-form-field appearance="outline" class="w-100" color="primary">
+                  <input matInput formControlName="firstName" />
+                </mat-form-field>
+              </div>
+              <div class="col-6">
+                <mat-label class="f-s-14 f-w-600 m-b-12 d-block">Last Name</mat-label>
+                <mat-form-field appearance="outline" class="w-100" color="primary">
+                  <input matInput formControlName="lastName" />
+                </mat-form-field>
+              </div>
+            </div>
+
             <mat-label class="f-s-14 f-w-600 m-b-12 d-block">Password</mat-label>
             <mat-form-field appearance="outline" class="w-100" color="primary">
-              <input matInput type="password" />
+              <input matInput formControlName="password" type="password" />
+              <mat-error *ngIf="f.password.hasError('required')">Password is required</mat-error>
+              <mat-error *ngIf="f.password.hasError('minlength')">Min 6 characters</mat-error>
             </mat-form-field>
 
-            <a [routerLink]="['/']" mat-flat-button color="primary" class="w-100">
-              Sign Up
-            </a>
-            <!-- input -->
+            <button mat-flat-button color="primary" class="w-100" type="submit" [disabled]="loading">
+              {{ loading ? 'Creating...' : 'Sign Up' }}
+            </button>
           </form>
-          <span class="d-block f-w-500 text-center m-t-24">Already have an Account?
 
+          <span class="d-block f-w-500 text-center m-t-24">Already have an Account?
             <a [routerLink]="['/authentication/login']" class="text-decoration-none text-primary f-w-500 f-s-14">
-              Sign In</a>
+              Sign In
+            </a>
           </span>
         </mat-card-content>
       </mat-card>

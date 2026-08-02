@@ -1,10 +1,11 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CoreService } from 'src/app/services/core.service';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { RouterModule } from '@angular/router';
 import { MaterialModule } from 'src/app/material.module';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { AuthService } from 'src/app/services/auth.service';
 
 @Component({
   selector: 'app-side-register',
@@ -12,14 +13,20 @@ import { MaterialModule } from 'src/app/material.module';
   templateUrl: './side-register.component.html',
 })
 export class AppSideRegisterComponent {
-  options = this.settings.getOptions();
+  private settings = inject(CoreService);
+  private router = inject(Router);
+  private auth = inject(AuthService);
+  private snackBar = inject(MatSnackBar);
 
-  constructor(private settings: CoreService, private router: Router) {}
+  options = this.settings.getOptions();
+  loading = false;
 
   form = new FormGroup({
-    uname: new FormControl('', [Validators.required, Validators.minLength(6)]),
-    email: new FormControl('', [Validators.required]),
-    password: new FormControl('', [Validators.required]),
+    tenantId: new FormControl('', [Validators.required]),
+    email: new FormControl('', [Validators.required, Validators.email]),
+    password: new FormControl('', [Validators.required, Validators.minLength(6)]),
+    firstName: new FormControl(''),
+    lastName: new FormControl(''),
   });
 
   get f() {
@@ -27,7 +34,19 @@ export class AppSideRegisterComponent {
   }
 
   submit() {
-    // console.log(this.form.value);
-    this.router.navigate(['/']);
+    if (this.form.invalid) return;
+    this.loading = true;
+    const v = this.form.value;
+    this.auth.register(v.email!, v.password!, v.tenantId!, v.firstName || undefined, v.lastName || undefined)
+      .subscribe({
+        next: () => {
+          this.loading = false;
+          this.router.navigate(['/dashboard']);
+        },
+        error: (err) => {
+          this.loading = false;
+          this.snackBar.open(err.error?.error || 'Registration failed', 'Close', { duration: 3000 });
+        },
+      });
   }
 }

@@ -1,13 +1,15 @@
 export interface Product {
-  id?: number;
+  id?: string;
   name: string;
-  brand: string;
-  description: string;
+  brand?: string;
+  description?: string;
   price: number;
-  category: string;       // e.g., 'Perfume'
-  volume: string;         // e.g., '50ml', '100ml'
-  fragranceNotes: string; // e.g., 'Floral, Woody, Citrus'
+  category?: string;
+  volume?: string;
+  fragranceNotes?: string;
   inStock: boolean;
-  imageUrl?: string;      // base64 or URL
-  createdAt?: Date;
+  imageUrl?: string;
+  tenantId?: string;
+  createdAt?: string;
+  updatedAt?: string;
 }

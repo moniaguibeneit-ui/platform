@@ -5,8 +5,9 @@ import { MatDialogModule, MAT_DIALOG_DATA, MatDialogRef } from '@angular/materia
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
-import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatIconModule } from '@angular/material/icon';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { MatSelectModule } from '@angular/material/select';
 import { Product } from '../../models/product';
 
 @Component({
@@ -19,8 +20,9 @@ import { Product } from '../../models/product';
     MatFormFieldModule,
     MatInputModule,
     MatButtonModule,
-    MatCheckboxModule,
     MatIconModule,
+    MatSlideToggleModule,
+    MatSelectModule,
   ],
   templateUrl: './product-form.component.html',
   styleUrls: ['./product-form.component.scss']
@@ -29,6 +31,7 @@ export class ProductFormComponent {
   form: FormGroup;
   isEdit: boolean;
   imagePreview: string | ArrayBuffer | null = null;
+  document = document;
 
   constructor(
     private fb: FormBuilder,
@@ -43,10 +46,10 @@ export class ProductFormComponent {
       brand: [product.brand || '', Validators.required],
       description: [product.description || '', Validators.required],
       price: [product.price || 0, [Validators.required, Validators.min(0)]],
-      category: ['Perfume'], // fixed
+      category: [product.category || 'Perfume'],
       volume: [product.volume || '', Validators.required],
       fragranceNotes: [product.fragranceNotes || ''],
-      inStock: [product.inStock || false],
+      inStock: [product.inStock ?? true],
       imageUrl: [product.imageUrl || '']
     });
     if (product.imageUrl) {

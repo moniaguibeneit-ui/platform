@@ -1,12 +1,15 @@
 import { Routes } from '@angular/router';
 import { BlankComponent } from './layouts/blank/blank.component';
 import { FullComponent } from './layouts/full/full.component';
-import { ProductListComponent } from './pages/product-list/product-list.component';   // 👈 import
+import { ProductListComponent } from './pages/product-list/product-list.component';
+import { TenantListComponent } from './pages/tenant-list/tenant-list.component';
+import { authGuard } from './guards/auth.guard';
 
 export const routes: Routes = [
   {
     path: '',
     component: FullComponent,
+    canActivate: [authGuard],
     children: [
       {
         path: '',
@@ -18,10 +21,13 @@ export const routes: Routes = [
         loadChildren: () =>
           import('./pages/pages.routes').then((m) => m.PagesRoutes),
       },
-      // ✅ Add product route here
+      {
+        path: 'tenants',
+        component: TenantListComponent,
+      },
       {
         path: 'products',
-        component: ProductListComponent,   // 👈 use the component
+        component: ProductListComponent,
       },
       {
         path: 'ui-components',

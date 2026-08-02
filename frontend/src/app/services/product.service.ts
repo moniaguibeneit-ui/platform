@@ -1,87 +1,33 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, of } from 'rxjs';
+import { Observable } from 'rxjs';
 import { Product } from '../models/product';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ProductService {
-  // private apiUrl = 'api/products'; // for real backend
+  private http = inject(HttpClient);
+  private apiUrl = `${environment.apiUrl}/products`;
 
-private products: Product[] = [
-  {
-    id: 1,
-    name: 'Chanel No. 5',
-    brand: 'Chanel',
-    description: 'Iconic floral aldehyde fragrance',
-    price: 120,
-    category: 'Perfume',
-    volume: '100ml',
-    fragranceNotes: 'Aldehyde, Jasmine, Rose',
-    inStock: true,
-    imageUrl: 'assets/images/chanel5.jpg'
-  },
-  {
-    id: 2,
-    name: 'Dior Sauvage',
-    brand: 'Dior',
-    description: 'Fresh, spicy, and woody',
-    price: 95,
-    category: 'Perfume',
-    volume: '60ml',
-    fragranceNotes: 'Bergamot, Pepper, Ambroxan',
-    inStock: false,
-    imageUrl: 'assets/images/dior-sauvage.jpg'
-  },
-  {
-    id: 3,
-    name: 'YSL Black Opium',
-    brand: 'Yves Saint Laurent',
-    description: 'Addictive, intense, and sensual',
-    price: 110,
-    category: 'Perfume',
-    volume: '50ml',
-    fragranceNotes: 'Coffee, Vanilla, White Flowers',
-    inStock: true,
-    imageUrl: 'assets/images/black-opium.jpg'
-  }
-];
-
-  constructor(private http: HttpClient) {}
-
-  // GET all products
   getProducts(): Observable<Product[]> {
-    // return this.http.get<Product[]>(this.apiUrl);
-    return of([...this.products]);
+    return this.http.get<Product[]>(this.apiUrl);
   }
 
-  // GET a single product by id
-  getProduct(id: number): Observable<Product> {
-    const product = this.products.find(p => p.id === id);
-    return of({ ...product } as Product);
+  getProduct(id: string): Observable<Product> {
+    return this.http.get<Product>(`${this.apiUrl}/${id}`);
   }
 
-  // POST new product
   addProduct(product: Product): Observable<Product> {
-    const newId = this.products.length + 1;
-    const newProduct = { ...product, id: newId };
-    this.products.push(newProduct);
-    return of(newProduct);
+    return this.http.post<Product>(this.apiUrl, product);
   }
 
-  // PUT update product
   updateProduct(product: Product): Observable<Product> {
-    const index = this.products.findIndex(p => p.id === product.id);
-    if (index !== -1) {
-      this.products[index] = { ...product };
-    }
-    return of(product);
+    return this.http.put<Product>(`${this.apiUrl}/${product.id}`, product);
   }
 
-  // DELETE product
-  deleteProduct(id: number): Observable<void> {
-    this.products = this.products.filter(p => p.id !== id);
-    return of();
+  deleteProduct(id: string): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/${id}`);
   }
 }

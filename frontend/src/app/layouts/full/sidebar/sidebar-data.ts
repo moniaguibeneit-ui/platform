@@ -11,6 +11,18 @@ export const navItems: NavItem[] = [
     bgcolor: 'primary',
   },
   {
+    displayName: 'Tenants',
+    iconName: 'building',
+    route: '/tenants',
+    bgcolor: 'success',
+  },
+  {
+    displayName: 'Products',
+    iconName: 'packages',
+    route: '/products',
+    bgcolor: 'secondary',
+  },
+  {
     displayName: 'Product Management',
     iconName: 'layout-dashboard',
     route: 'https://spike-angular-pro-main.netlify.app/dashboards/dashboard1',

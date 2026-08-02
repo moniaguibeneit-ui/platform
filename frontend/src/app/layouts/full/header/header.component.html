@@ -20,26 +20,26 @@
   <!-- --------------------------------------------------------------- -->
   <!-- profile Dropdown -->
   <!-- --------------------------------------------------------------- -->
- 
+
   <button class="rounded-pill" mat-mini-fab [matMenuTriggerFor]="profilemenu" aria-label="Notifications">
     <img src="/assets/images/profile/user-1.jpg" class="rounded-circle object-cover d-block" width="35" />
   </button>
   <mat-menu #profilemenu="matMenu" class="cardWithShadow topbar-dd" xPosition="before">
-    <button mat-menu-item>
-      <mat-icon class="d-flex align-items-center"><i-tabler name="user" class="icon-18 d-flex"></i-tabler></mat-icon>My
-      Profile
+    <button mat-menu-item *ngIf="isAuthenticated">
+      <mat-icon class="d-flex align-items-center"><i-tabler name="user" class="icon-18 d-flex"></i-tabler></mat-icon>{{ userEmail }}
     </button>
-    <button mat-menu-item>
-      <mat-icon class="d-flex align-items-center"><i-tabler name="mail" class="icon-18 d-flex"></i-tabler></mat-icon>My
-      Account
-    </button>
-    <button mat-menu-item>
-      <mat-icon class="d-flex align-items-center"><i-tabler name="list-check"
-          class="icon-18 d-flex"></i-tabler></mat-icon>My Task
+    <button mat-menu-item *ngIf="isAuthenticated">
+      <mat-icon class="d-flex align-items-center"><i-tabler name="settings" class="icon-18 d-flex"></i-tabler></mat-icon>Settings
     </button>
 
-    <div class="p-x-12 m-t-12">
-      <a [routerLink]="['/authentication/login']" mat-stroked-button class="w-100">Logout</a>
+    <div class="p-x-12 m-t-12" *ngIf="isAuthenticated">
+      <button mat-stroked-button color="warn" class="w-100" (click)="logout()">
+        <mat-icon class="m-r-4">logout</mat-icon> Logout
+      </button>
+    </div>
+
+    <div class="p-x-12 p-y-12" *ngIf="!isAuthenticated">
+      <a [routerLink]="['/authentication/login']" mat-stroked-button class="w-100">Login</a>
     </div>
   </mat-menu>
 </mat-toolbar>

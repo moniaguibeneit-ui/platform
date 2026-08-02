@@ -1,4 +1,4 @@
-<h2 mat-dialog-title>{{ data.mode === 'add' ? 'Add' : 'Edit' }} Perfume</h2>
+<h2 mat-dialog-title>{{ data.mode === 'add' ? 'Add' : 'Edit' }} Product</h2>
 <mat-dialog-content>
   <form [formGroup]="form" class="product-form">
     <!-- Name -->
@@ -38,14 +38,23 @@
       </mat-form-field>
     </div>
 
+    <!-- Category -->
+    <mat-form-field appearance="fill" class="full-width">
+      <mat-label>Category</mat-label>
+      <mat-select formControlName="category">
+        <mat-option value="Perfume">Perfume</mat-option>
+        <mat-option value="Cosmetics">Cosmetics</mat-option>
+        <mat-option value="Skincare">Skincare</mat-option>
+        <mat-option value="Haircare">Haircare</mat-option>
+        <mat-option value="Accessories">Accessories</mat-option>
+      </mat-select>
+    </mat-form-field>
+
     <!-- Fragrance Notes -->
     <mat-form-field appearance="fill" class="full-width">
       <mat-label>Fragrance Notes</mat-label>
       <input matInput formControlName="fragranceNotes" placeholder="e.g. Floral, Woody">
     </mat-form-field>
-
-    <!-- Category (hidden or set as Perfume) -->
-    <input type="hidden" formControlName="category">
 
     <!-- In Stock -->
     <mat-checkbox formControlName="inStock" color="primary">In Stock</mat-checkbox>
