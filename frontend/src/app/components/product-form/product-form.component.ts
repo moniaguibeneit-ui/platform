@@ -1,4 +1,4 @@
-import { Component, Inject } from '@angular/core';
+import { Component, Inject, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { MatDialogModule, MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
@@ -8,6 +8,9 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatSelectModule } from '@angular/material/select';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { HttpClient } from '@angular/common/http';
+import { environment } from '../../../environments/environment';
 import { Product } from '../../models/product';
 
 @Component({
@@ -23,6 +26,7 @@ import { Product } from '../../models/product';
     MatIconModule,
     MatSlideToggleModule,
     MatSelectModule,
+    MatProgressBarModule,
   ],
   templateUrl: './product-form.component.html',
   styleUrls: ['./product-form.component.scss']
@@ -30,8 +34,11 @@ import { Product } from '../../models/product';
 export class ProductFormComponent {
   form: FormGroup;
   isEdit: boolean;
-  imagePreview: string | ArrayBuffer | null = null;
+  imageUrls: string[] = [];
+  uploading = false;
   document = document;
+
+  private http = inject(HttpClient);
 
   constructor(
     private fb: FormBuilder,
@@ -50,35 +57,69 @@ export class ProductFormComponent {
       volume: [product.volume || '', Validators.required],
       fragranceNotes: [product.fragranceNotes || ''],
       inStock: [product.inStock ?? true],
-      imageUrl: [product.imageUrl || '']
     });
-    if (product.imageUrl) {
-      this.imagePreview = product.imageUrl;
+    // Load existing images
+    if (product.images && product.images.length > 0) {
+      this.imageUrls = [...product.images];
+    } else if (product.imageUrl) {
+      this.imageUrls = [product.imageUrl];
     }
   }
 
-  onFileSelected(event: Event): void {
-    const file = (event.target as HTMLInputElement).files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = () => {
-        this.imagePreview = reader.result;
-        this.form.patchValue({ imageUrl: reader.result });
-      };
-      reader.readAsDataURL(file);
-    }
+  get primaryImage(): string | null {
+    return this.imageUrls.length > 0 ? this.imageUrls[0] : null;
   }
 
-  removeImage(): void {
-    this.imagePreview = null;
-    this.form.patchValue({ imageUrl: '' });
-    const fileInput = document.getElementById('fileInput') as HTMLInputElement;
-    if (fileInput) fileInput.value = '';
+  onFilesSelected(event: Event): void {
+    const files = (event.target as HTMLInputElement).files;
+    if (!files) return;
+
+    this.uploading = true;
+    let remaining = files.length;
+    const newUrls: string[] = [];
+
+    for (let i = 0; i < files.length; i++) {
+      const file = files[i];
+      const formData = new FormData();
+      formData.append('file', file);
+
+      this.http.post<{ url: string }>(`${environment.apiUrl}/products/upload`, formData).subscribe({
+        next: (res) => {
+          newUrls.push(res.url);
+          remaining--;
+          if (remaining === 0) {
+            this.imageUrls.push(...newUrls);
+            this.uploading = false;
+          }
+        },
+        error: () => {
+          remaining--;
+          if (remaining === 0) {
+            this.uploading = false;
+          }
+        },
+      });
+    }
+    // Clear input so same file can be selected again
+    (event.target as HTMLInputElement).value = '';
+  }
+
+  removeImage(index: number): void {
+    this.imageUrls.splice(index, 1);
+  }
+
+  moveImage(index: number, direction: 'left' | 'right'): void {
+    const newIndex = direction === 'left' ? index - 1 : index + 1;
+    if (newIndex < 0 || newIndex >= this.imageUrls.length) return;
+    [this.imageUrls[index], this.imageUrls[newIndex]] = [this.imageUrls[newIndex], this.imageUrls[index]];
   }
 
   onSubmit(): void {
     if (this.form.valid) {
-      this.dialogRef.close(this.form.value);
+      const value = this.form.value;
+      value.imageUrl = this.imageUrls.length > 0 ? this.imageUrls[0] : null;
+      value.imageUrls = this.imageUrls;
+      this.dialogRef.close(value);
     }
   }
 

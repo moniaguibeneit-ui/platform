@@ -1,0 +1,74 @@
+<div class="dialog-header">
+  <div class="dialog-icon">
+    <mat-icon>add_shopping_cart</mat-icon>
+  </div>
+  <h2 mat-dialog-title>New Order</h2>
+</div>
+
+<mat-dialog-content>
+  <!-- Add item section -->
+  <div class="add-item-section">
+    <mat-form-field appearance="outline" class="product-select">
+      <mat-label>Select Product</mat-label>
+      <mat-select [(value)]="selectedProductId">
+        <mat-option *ngFor="let p of products" [value]="p.id">
+          {{ p.name }} - ${{ p.price }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="qty-field">
+      <mat-label>Qty</mat-label>
+      <input matInput type="number" [(ngModel)]="quantity" min="1">
+    </mat-form-field>
+
+    <button mat-flat-button color="primary" (click)="addItem()" [disabled]="!selectedProductId || quantity < 1" class="add-btn">
+      <mat-icon>add</mat-icon>
+    </button>
+  </div>
+
+  <div *ngIf="products.length === 0" class="no-products-hint">
+    <mat-icon>info</mat-icon>
+    No products available. Add products first.
+  </div>
+
+  <!-- Items list -->
+  <div *ngIf="items.length > 0" class="items-list">
+    <div class="items-header">
+      <span>Order Items</span>
+    </div>
+
+    <div *ngFor="let item of items; let i = index" class="item-row">
+      <div class="item-info">
+        <div class="item-name f-w-600">{{ item.productName }}</div>
+        <div class="item-detail f-s-13 text-muted">
+          {{ item.quantity }} x ${{ item.unitPrice }} = <span class="f-w-600 text-dark">${{ item.quantity * item.unitPrice }}</span>
+        </div>
+      </div>
+      <button mat-icon-button color="warn" (click)="removeItem(i)" matTooltip="Remove">
+        <mat-icon>remove_circle</mat-icon>
+      </button>
+    </div>
+
+    <mat-divider></mat-divider>
+
+    <div class="order-total">
+      <span class="f-s-14 text-muted">Total</span>
+      <span class="f-s-20 f-w-700 text-primary">${{ total }}</span>
+    </div>
+  </div>
+
+  <!-- Notes -->
+  <mat-form-field appearance="outline" class="full-width">
+    <mat-label>Notes (optional)</mat-label>
+    <textarea matInput [(ngModel)]="notes" rows="2" placeholder="Special instructions..."></textarea>
+  </mat-form-field>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end" class="dialog-actions">
+  <button mat-stroked-button (click)="cancel()">Cancel</button>
+  <button mat-flat-button color="primary" (click)="submit()" [disabled]="items.length === 0">
+    <mat-icon style="font-size:20px;width:20px;height:20px;">shopping_cart_checkout</mat-icon>
+    Create Order
+  </button>
+</mat-dialog-actions>

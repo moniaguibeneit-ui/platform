@@ -3,6 +3,8 @@ import { BlankComponent } from './layouts/blank/blank.component';
 import { FullComponent } from './layouts/full/full.component';
 import { ProductListComponent } from './pages/product-list/product-list.component';
 import { TenantListComponent } from './pages/tenant-list/tenant-list.component';
+import { UserListComponent } from './pages/user-list/user-list.component';
+import { OrderListComponent } from './pages/order-list/order-list.component';
 import { authGuard } from './guards/auth.guard';
 
 export const routes: Routes = [
@@ -28,6 +30,14 @@ export const routes: Routes = [
       {
         path: 'products',
         component: ProductListComponent,
+      },
+      {
+        path: 'users',
+        component: UserListComponent,
+      },
+      {
+        path: 'orders',
+        component: OrderListComponent,
       },
       {
         path: 'ui-components',

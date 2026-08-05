@@ -9,6 +9,7 @@ export interface Product {
   fragranceNotes?: string;
   inStock: boolean;
   imageUrl?: string;
+  images?: string[];
   tenantId?: string;
   createdAt?: string;
   updatedAt?: string;

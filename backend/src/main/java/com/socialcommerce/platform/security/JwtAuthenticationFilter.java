@@ -1,22 +1,24 @@
 package com.socialcommerce.platform.security;
 
-import com.socialcommerce.platform.tenant.context.TenantContext;
-import com.socialcommerce.platform.tenant.entity.Tenant;
-import com.socialcommerce.platform.tenant.entity.TenantStatus;
-import com.socialcommerce.platform.tenant.repository.TenantRepository;
-import jakarta.servlet.FilterChain;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.List;
+import java.util.UUID;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import java.io.IOException;
-import java.util.List;
-import java.util.UUID;
+import com.socialcommerce.platform.tenant.context.TenantContext;
+import com.socialcommerce.platform.tenant.entity.Tenant;
+import com.socialcommerce.platform.tenant.entity.TenantStatus;
+import com.socialcommerce.platform.tenant.repository.TenantRepository;
+
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 /**
  * Filtre JWT (SAD 6.5, 6.6, 6.8).
@@ -43,7 +45,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             throws ServletException, IOException {
         String path = request.getRequestURI();
 
-        if (path.startsWith("/api/auth/") || path.startsWith("/api/admin/tenants")) {
+        if (path.startsWith("/api/auth/") || path.startsWith("/api/admin/tenants") || path.startsWith("/uploads/")) {
             chain.doFilter(request, response);
             return;
         }

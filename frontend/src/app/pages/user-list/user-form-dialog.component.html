@@ -1,0 +1,74 @@
+<div class="dialog-header">
+  <div class="dialog-icon" [class.edit-mode]="isEdit">
+    <mat-icon>{{ isEdit ? 'edit' : 'person_add' }}</mat-icon>
+  </div>
+  <h2 mat-dialog-title>{{ isEdit ? 'Edit User' : 'New User' }}</h2>
+</div>
+
+<mat-dialog-content>
+  <form [formGroup]="form" class="user-form">
+    <!-- Email -->
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Email</mat-label>
+      <input matInput formControlName="email" type="email" placeholder="user@company.com" required>
+      <mat-icon matSuffix>mail</mat-icon>
+      <mat-error *ngIf="form.get('email')?.hasError('required')">Email is required</mat-error>
+      <mat-error *ngIf="form.get('email')?.hasError('email')">Invalid email</mat-error>
+    </mat-form-field>
+
+    <div class="row">
+      <!-- First Name -->
+      <mat-form-field appearance="outline" class="half-width">
+        <mat-label>First Name</mat-label>
+        <input matInput formControlName="firstName" placeholder="John">
+        <mat-icon matSuffix>person</mat-icon>
+      </mat-form-field>
+
+      <!-- Last Name -->
+      <mat-form-field appearance="outline" class="half-width">
+        <mat-label>Last Name</mat-label>
+        <input matInput formControlName="lastName" placeholder="Doe">
+      </mat-form-field>
+    </div>
+
+    <!-- Password -->
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>{{ isEdit ? 'New Password (leave blank to keep)' : 'Password' }}</mat-label>
+      <input matInput formControlName="password" type="password" placeholder="Min 6 characters">
+      <mat-icon matSuffix>lock</mat-icon>
+      <mat-error *ngIf="form.get('password')?.hasError('required')">Password is required</mat-error>
+      <mat-error *ngIf="form.get('password')?.hasError('minlength')">Min 6 characters</mat-error>
+    </mat-form-field>
+
+    <!-- Roles -->
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Roles</mat-label>
+      <mat-select formControlName="roleIds" multiple>
+        <mat-option *ngFor="let role of roles" [value]="role.id">{{ role.name }}</mat-option>
+      </mat-select>
+      <mat-icon matSuffix>shield_person</mat-icon>
+      <mat-hint *ngIf="roles.length === 0">No roles created yet for this tenant</mat-hint>
+    </mat-form-field>
+
+    <!-- Active toggle -->
+    <div class="active-toggle">
+      <mat-slide-toggle formControlName="active" color="primary">
+        <span class="d-flex align-items-center gap-8">
+          <mat-icon [class.text-success]="form.get('active')?.value" [class.text-error]="!form.get('active')?.value"
+                    style="font-size:18px;width:18px;height:18px;">
+            {{ form.get('active')?.value ? 'check_circle' : 'cancel' }}
+          </mat-icon>
+          {{ form.get('active')?.value ? 'Active account' : 'Disabled account' }}
+        </span>
+      </mat-slide-toggle>
+    </div>
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end" class="dialog-actions">
+  <button mat-stroked-button (click)="cancel()">Cancel</button>
+  <button mat-flat-button color="primary" (click)="submit()" [disabled]="!form.valid">
+    <mat-icon style="font-size:20px;width:20px;height:20px;">{{ isEdit ? 'save' : 'person_add' }}</mat-icon>
+    {{ isEdit ? 'Save Changes' : 'Add User' }}
+  </button>
+</mat-dialog-actions>

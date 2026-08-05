@@ -1,22 +1,24 @@
 package com.socialcommerce.platform.product.service;
 
-import com.socialcommerce.platform.product.dto.ProductRequest;
-import com.socialcommerce.platform.product.dto.ProductResponse;
-import com.socialcommerce.platform.product.entity.Product;
-import com.socialcommerce.platform.product.repository.ProductRepository;
-import com.socialcommerce.platform.tenant.context.TenantContext;
-import jakarta.persistence.EntityNotFoundException;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.socialcommerce.platform.product.dto.ProductRequest;
+import com.socialcommerce.platform.product.dto.ProductResponse;
+import com.socialcommerce.platform.product.entity.Product;
+import com.socialcommerce.platform.product.entity.ProductImage;
+import com.socialcommerce.platform.product.repository.ProductRepository;
+import com.socialcommerce.platform.tenant.context.TenantContext;
+
+import jakarta.persistence.EntityNotFoundException;
+
 /**
- * Product CRUD service (SAD ÃÂ§5.7.3).
- *
- * All operations are automatically scoped to the current tenant via
- * TenantContext + Hibernate @Filter("tenant").
+ * Product CRUD service (SAD 5.7.3).
+ * Supports multiple images per product.
  */
 @Service
 @Transactional
@@ -55,6 +57,7 @@ public class ProductService {
                 .inStock(req.getInStock() != null ? req.getInStock() : true)
                 .imageUrl(req.getImageUrl())
                 .build();
+        product.setImages(buildImages(req));
         return ProductResponse.from(productRepository.save(product));
     }
 
@@ -70,6 +73,10 @@ public class ProductService {
         if (req.getFragranceNotes() != null) product.setFragranceNotes(req.getFragranceNotes());
         if (req.getInStock() != null) product.setInStock(req.getInStock());
         if (req.getImageUrl() != null) product.setImageUrl(req.getImageUrl());
+        if (req.getImageUrls() != null) {
+            product.getImages().clear();
+            product.getImages().addAll(buildImages(req));
+        }
         return ProductResponse.from(productRepository.save(product));
     }
 
@@ -78,5 +85,28 @@ public class ProductService {
             throw new EntityNotFoundException("Product " + id + " not found");
         }
         productRepository.deleteById(id);
+    }
+
+    private List<ProductImage> buildImages(ProductRequest req) {
+        List<ProductImage> images = new ArrayList<>();
+        List<String> allUrls = new ArrayList<>();
+        // Combine imageUrl (primary) + imageUrls (additional), avoid duplicates
+        if (req.getImageUrl() != null && !req.getImageUrl().isBlank()) {
+            allUrls.add(req.getImageUrl());
+        }
+        if (req.getImageUrls() != null) {
+            for (String url : req.getImageUrls()) {
+                if (url != null && !url.isBlank() && !allUrls.contains(url)) {
+                    allUrls.add(url);
+                }
+            }
+        }
+        for (int i = 0; i < allUrls.size(); i++) {
+            ProductImage img = new ProductImage();
+            img.setImageUrl(allUrls.get(i));
+            img.setSortOrder(i);
+            images.add(img);
+        }
+        return images;
     }
 }

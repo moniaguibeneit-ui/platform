@@ -1,0 +1,65 @@
+.dialog-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 8px;
+
+  .dialog-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, #6366f1, #818cf8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+
+    mat-icon {
+      color: white;
+      font-size: 22px;
+      width: 22px;
+      height: 22px;
+    }
+
+    &.edit-mode {
+      background: linear-gradient(135deg, #f59e0b, #fbbf24);
+    }
+  }
+
+  h2 {
+    margin: 0;
+    font-size: 19px;
+    font-weight: 700;
+  }
+}
+
+.user-form {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding-top: 8px;
+  min-width: 500px;
+}
+
+.full-width { width: 100%; }
+.half-width { width: 48%; }
+.row {
+  display: flex;
+  justify-content: space-between;
+}
+
+.active-toggle {
+  margin-top: 8px;
+  padding: 14px 16px;
+  background: var(--mat-sys-surface-variant);
+  border-radius: 10px;
+}
+
+.gap-8 { gap: 8px; }
+.text-success { color: #22c55e; }
+.text-error { color: #ef4444; }
+
+.dialog-actions {
+  padding-top: 16px;
+  gap: 10px;
+}

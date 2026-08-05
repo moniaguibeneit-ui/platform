@@ -94,7 +94,8 @@
             <th mat-header-cell *matHeaderCellDef class="f-w-600 f-s-16">Product</th>
             <td mat-cell *matCellDef="let p">
               <div class="d-flex align-items-center">
-                <div class="product-avatar bg-light-primary text-primary f-w-700">{{ p.name.charAt(0).toUpperCase() }}</div>
+                <img *ngIf="p.imageUrl || (p.images && p.images.length > 0)" [src]="p.imageUrl || p.images![0]" alt="product" width="40" height="40" class="product-img" />
+                <div *ngIf="!p.imageUrl && !(p.images && p.images.length > 0)" class="product-avatar bg-light-primary text-primary f-w-700">{{ p.name.charAt(0).toUpperCase() }}</div>
                 <div class="m-l-16">
                   <h6 class="f-s-14 f-w-600 m-0">{{ p.name }}</h6>
                   <span class="f-s-13 text-muted">{{ p.brand }}</span>

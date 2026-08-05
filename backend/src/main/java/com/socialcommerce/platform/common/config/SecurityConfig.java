@@ -1,8 +1,5 @@
 package com.socialcommerce.platform.common.config;
 
-import com.socialcommerce.platform.security.JwtAuthenticationFilter;
-import com.socialcommerce.platform.security.JwtService;
-import com.socialcommerce.platform.tenant.repository.TenantRepository;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -12,6 +9,10 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
+import com.socialcommerce.platform.security.JwtAuthenticationFilter;
+import com.socialcommerce.platform.security.JwtService;
+import com.socialcommerce.platform.tenant.repository.TenantRepository;
 
 /**
  * Configuration sÃ©curitÃ© JWT (SAD Â§6.3, Â§6.7, Â§6.8).
@@ -28,6 +29,7 @@ public class SecurityConfig {
                 .requestMatchers("/api/auth/**").permitAll()
                 .requestMatchers("/api/admin/tenants").permitAll()
                 .requestMatchers("/api/admin/tenants/**").permitAll()
+                .requestMatchers("/uploads/**").permitAll()
                 .anyRequest().authenticated()
             )
             .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);

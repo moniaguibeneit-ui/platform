@@ -1,34 +1,41 @@
 package com.socialcommerce.platform.security;
 
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.UUID;
+
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.socialcommerce.platform.security.dto.LoginRequest;
 import com.socialcommerce.platform.security.dto.LoginResponse;
 import com.socialcommerce.platform.security.dto.RegisterRequest;
 import com.socialcommerce.platform.user.entity.Role;
 import com.socialcommerce.platform.user.entity.User;
+import com.socialcommerce.platform.user.repository.RoleRepository;
 import com.socialcommerce.platform.user.repository.UserRepository;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
-import java.util.UUID;
 
 /**
- * Authentification et enregistrement des utilisateurs (SAD §6.4, §6.7).
+ * Authentification et enregistrement (SAD 6.4, 6.7).
  *
- * Le login est résolu par (tenantId, email) : un email peut exister
- * dans plusieurs tenants. Le password est vérifié avec BCrypt.
+ * On register, the user is assigned the ADMIN role of the tenant
+ * (first user becomes the tenant admin, SAD 4.8).
  */
 @Service
 @Transactional
 public class AuthService {
 
     private final UserRepository userRepository;
+    private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
 
-    public AuthService(UserRepository userRepository, PasswordEncoder passwordEncoder, JwtService jwtService) {
+    public AuthService(UserRepository userRepository, RoleRepository roleRepository,
+                       PasswordEncoder passwordEncoder, JwtService jwtService) {
         this.userRepository = userRepository;
+        this.roleRepository = roleRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtService = jwtService;
     }
@@ -60,6 +67,12 @@ public class AuthService {
         if (userRepository.findByTenantIdAndEmail(tenantId, request.email()).isPresent()) {
             throw new IllegalArgumentException("Email already registered in this tenant");
         }
+
+        // Assign ADMIN role from the tenant's default roles
+        Set<Role> roles = new HashSet<>();
+        roleRepository.findByTenantIdAndName(tenantId, "ADMIN")
+                .ifPresent(roles::add);
+
         User user = User.builder()
                 .tenantId(tenantId)
                 .email(request.email())
@@ -68,14 +81,17 @@ public class AuthService {
                 .lastName(request.lastName())
                 .active(true)
                 .build();
+        user.setRoles(roles);
         user = userRepository.save(user);
-        String token = jwtService.generateToken(user, tenantId, List.of());
+
+        List<String> roleNames = roles.stream().map(Role::getName).toList();
+        String token = jwtService.generateToken(user, tenantId, roleNames);
         return new LoginResponse(
                 token, "Bearer",
                 user.getId().toString(),
                 user.getEmail(),
                 tenantId.toString(),
-                List.of()
+                roleNames
         );
     }
 }

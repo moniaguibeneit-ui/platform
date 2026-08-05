@@ -47,6 +47,14 @@
   flex-shrink: 0;
 }
 
+.product-img {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
 .p-y-40 { padding-top: 40px; padding-bottom: 40px; }
 .opacity-50 { opacity: 0.5; }
 .m-b-16 { margin-bottom: 16px; }

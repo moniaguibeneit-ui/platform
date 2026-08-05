@@ -1,0 +1,24 @@
+.order-list-container {
+  padding: 16px;
+
+  .header-actions {
+    margin-left: auto;
+  }
+
+  .empty-icon-wrap {
+    width: 64px;
+    height: 64px;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    mat-icon {
+      font-size: 32px;
+      width: 32px;
+      height: 32px;
+    }
+  }
+
+  .gap-8 { gap: 8px; }
+}

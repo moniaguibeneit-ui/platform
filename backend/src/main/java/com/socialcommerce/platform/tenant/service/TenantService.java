@@ -1,29 +1,52 @@
 package com.socialcommerce.platform.tenant.service;
 
-import com.socialcommerce.platform.tenant.dto.TenantCreateRequest;
-import com.socialcommerce.platform.tenant.dto.TenantResponse;
-import com.socialcommerce.platform.tenant.dto.TenantUpdateRequest;
-import com.socialcommerce.platform.tenant.entity.*;
-import com.socialcommerce.platform.tenant.repository.TenantRepository;
-import com.socialcommerce.platform.tenant.repository.TenantSubscriptionRepository;
-import jakarta.persistence.EntityNotFoundException;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.socialcommerce.platform.tenant.dto.TenantCreateRequest;
+import com.socialcommerce.platform.tenant.dto.TenantResponse;
+import com.socialcommerce.platform.tenant.dto.TenantUpdateRequest;
+import com.socialcommerce.platform.tenant.entity.SubscriptionPlan;
+import com.socialcommerce.platform.tenant.entity.SubscriptionStatus;
+import com.socialcommerce.platform.tenant.entity.Tenant;
+import com.socialcommerce.platform.tenant.entity.TenantStatus;
+import com.socialcommerce.platform.tenant.entity.TenantSubscription;
+import com.socialcommerce.platform.tenant.repository.TenantRepository;
+import com.socialcommerce.platform.tenant.repository.TenantSubscriptionRepository;
+import com.socialcommerce.platform.user.entity.Role;
+import com.socialcommerce.platform.user.repository.RoleRepository;
+
+import jakarta.persistence.EntityNotFoundException;
+
+/**
+ * Tenant management service (SAD 4.7, 4.8).
+ *
+ * On tenant creation, bootstraps:
+ * - An ACTIVE subscription
+ * - Default RBAC roles: ADMIN, MANAGER, COMMERCIAL, STOCK_MANAGER, ACCOUNTANT
+ */
 @Service
 @Transactional
 public class TenantService {
 
+    private static final String[] DEFAULT_ROLES = {
+            "ADMIN", "MANAGER", "COMMERCIAL", "STOCK_MANAGER", "ACCOUNTANT"
+    };
+
     private final TenantRepository tenantRepository;
     private final TenantSubscriptionRepository subscriptionRepository;
+    private final RoleRepository roleRepository;
 
-    public TenantService(TenantRepository tenantRepository, TenantSubscriptionRepository subscriptionRepository) {
+    public TenantService(TenantRepository tenantRepository,
+                         TenantSubscriptionRepository subscriptionRepository,
+                         RoleRepository roleRepository) {
         this.tenantRepository = tenantRepository;
         this.subscriptionRepository = subscriptionRepository;
+        this.roleRepository = roleRepository;
     }
 
     @Transactional(readOnly = true)
@@ -46,10 +69,20 @@ public class TenantService {
                 .subscriptionPlan(plan).status(TenantStatus.ACTIVE).active(true).build();
         tenant = tenantRepository.save(tenant);
 
+        // Bootstrap subscription
         LocalDateTime now = LocalDateTime.now();
         TenantSubscription sub = TenantSubscription.builder()
                 .tenantId(tenant.getId()).plan(plan).status(SubscriptionStatus.ACTIVE).startedAt(now).build();
         subscriptionRepository.save(sub);
+
+        // Bootstrap default RBAC roles (SAD 4.8, 6.7)
+        for (String roleName : DEFAULT_ROLES) {
+            Role role = Role.builder()
+                    .tenantId(tenant.getId())
+                    .name(roleName)
+                    .build();
+            roleRepository.save(role);
+        }
 
         return TenantResponse.from(tenant);
     }

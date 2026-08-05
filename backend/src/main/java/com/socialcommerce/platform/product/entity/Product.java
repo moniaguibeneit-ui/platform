@@ -1,19 +1,19 @@
 package com.socialcommerce.platform.product.entity;
 
 import com.socialcommerce.platform.common.entity.TenantAwareEntity;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
- * Product entity, tenant-scoped (SAD Â§5.7.3).
- * Extends TenantAwareEntity for automatic tenant isolation via Hibernate filter.
+ * Product entity, tenant-scoped (SAD 5.7.3).
+ * Supports multiple images via ProductImage collection.
  */
 @Entity
 @Table(name = "products")
@@ -48,5 +48,13 @@ public class Product extends TenantAwareEntity {
     private Boolean inStock;
 
     @Column(name = "image_url", length = 500)
-    private String imageUrl;
+    private String imageUrl; // primary image (first), kept for backward compat
+
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    @JoinTable(
+        name = "product_image_links",
+        joinColumns = @JoinColumn(name = "product_id"),
+        inverseJoinColumns = @JoinColumn(name = "image_id")
+    )
+    private List<ProductImage> images = new ArrayList<>();
 }

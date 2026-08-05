@@ -12,9 +12,18 @@ import { Product } from '../../models/product';
   imports: [CommonModule, MatDialogModule, MatButtonModule, MatIconModule, MatDividerModule],
   template: `
     <div class="view-dialog">
-      <!-- Image header -->
-      <div class="view-image" *ngIf="product.imageUrl; else noImage">
-        <img [src]="product.imageUrl" alt="product" />
+      <!-- Image gallery -->
+      <div class="gallery" *ngIf="allImages.length > 0; else noImage">
+        <div class="main-image">
+          <img [src]="allImages[selectedImage]" alt="product" />
+        </div>
+        <div class="thumbnails" *ngIf="allImages.length > 1">
+          <div *for="let img of allImages; let i = index"
+               class="thumb" [class.active]="i === selectedImage"
+               (click)="selectedImage = i">
+            <img [src]="img" alt="thumbnail {{ i + 1 }}" />
+          </div>
+        </div>
       </div>
       <ng-template #noImage>
         <div class="view-image-placeholder">
@@ -87,15 +96,45 @@ import { Product } from '../../models/product';
       border-radius: 16px;
     }
 
-    .view-image {
-      width: 100%;
-      height: 200px;
-      overflow: hidden;
-
-      img {
+    .gallery {
+      .main-image {
         width: 100%;
-        height: 100%;
-        object-fit: cover;
+        height: 240px;
+        overflow: hidden;
+
+        img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+        }
+      }
+
+      .thumbnails {
+        display: flex;
+        gap: 8px;
+        padding: 12px;
+        overflow-x: auto;
+
+        .thumb {
+          width: 56px;
+          height: 56px;
+          border-radius: 8px;
+          overflow: hidden;
+          cursor: pointer;
+          border: 2px solid transparent;
+          flex-shrink: 0;
+          transition: border-color 0.2s;
+
+          &.active {
+            border-color: #6366f1;
+          }
+
+          img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+          }
+        }
       }
     }
 
@@ -239,10 +278,20 @@ import { Product } from '../../models/product';
   `],
 })
 export class ProductViewDialogComponent {
+  selectedImage = 0;
+  allImages: string[] = [];
+
   constructor(
     private dialogRef: MatDialogRef<ProductViewDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public product: Product
-  ) {}
+  ) {
+    // Combine images list + imageUrl for backward compat
+    if (product.images && product.images.length > 0) {
+      this.allImages = [...product.images];
+    } else if (product.imageUrl) {
+      this.allImages = [product.imageUrl];
+    }
+  }
 
   close(): void {
     this.dialogRef.close();
