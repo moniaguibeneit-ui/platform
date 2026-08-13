@@ -90,8 +90,9 @@ export class OrderListComponent implements OnInit {
   statusClass(status: string): string {
     switch (status) {
       case 'PENDING': return 'bg-light-warning text-warning';
-      case 'PAID': return 'bg-light-primary text-primary';
-      case 'SHIPPED': return 'bg-light-info text-info';
+      case 'CONFIRMED': return 'bg-light-primary text-primary';
+      case 'PREPARING': return 'bg-light-info text-info';
+      case 'SHIPPED': return 'bg-light-accent text-accent';
       case 'DELIVERED': return 'bg-light-success text-success';
       case 'CANCELLED': return 'bg-light-error text-error';
       default: return 'bg-light-secondary text-secondary';

@@ -103,6 +103,22 @@ interface DialogData {
     .full-width { width: 100%; margin-bottom: 8px; }
     mat-dialog-content { min-width: 420px; padding-top: 8px; }
     .dialog-actions { padding-top: 16px; gap: 10px; }
+
+    @media (max-width: 768px) {
+      mat-dialog-content { min-width: 100%; }
+    }
+
+    @media (max-width: 576px) {
+      .dialog-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+      }
+
+      h2 {
+        font-size: 16px !important;
+      }
+    }
   `],
 })
 export class TenantFormDialogComponent {

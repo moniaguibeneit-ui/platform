@@ -86,14 +86,17 @@
               <button mat-menu-item (click)="updateStatus(o, 'PENDING')" [disabled]="o.status === 'PENDING'">
                 <mat-icon>schedule</mat-icon> Pending
               </button>
-              <button mat-menu-item (click)="updateStatus(o, 'PAID')" [disabled]="o.status === 'PAID'">
-                <mat-icon>payments</mat-icon> Paid
+              <button mat-menu-item (click)="updateStatus(o, 'CONFIRMED')" [disabled]="o.status === 'CONFIRMED'">
+                <mat-icon>check_circle</mat-icon> Confirmed
+              </button>
+              <button mat-menu-item (click)="updateStatus(o, 'PREPARING')" [disabled]="o.status === 'PREPARING'">
+                <mat-icon>inventory</mat-icon> Preparing
               </button>
               <button mat-menu-item (click)="updateStatus(o, 'SHIPPED')" [disabled]="o.status === 'SHIPPED'">
                 <mat-icon>local_shipping</mat-icon> Shipped
               </button>
               <button mat-menu-item (click)="updateStatus(o, 'DELIVERED')" [disabled]="o.status === 'DELIVERED'">
-                <mat-icon>check_circle</mat-icon> Delivered
+                <mat-icon>done_all</mat-icon> Delivered
               </button>
               <button mat-menu-item (click)="updateStatus(o, 'CANCELLED')" [disabled]="o.status === 'CANCELLED'">
                 <mat-icon>cancel</mat-icon> Cancelled

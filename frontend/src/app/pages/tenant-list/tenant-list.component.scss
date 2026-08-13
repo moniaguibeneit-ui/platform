@@ -38,3 +38,48 @@
   .p-y-40 { padding-top: 40px; padding-bottom: 40px; }
   .m-auto { margin: 0 auto; }
 }
+
+/* Mobile responsive styles */
+@media (max-width: 768px) {
+  .tenant-list-container {
+    padding: 8px;
+  }
+  
+  mat-card-header {
+    flex-direction: column;
+    align-items: flex-start !important;
+    gap: 12px;
+  }
+  
+  .header-actions {
+    margin-left: 0;
+    width: 100%;
+  }
+  
+  .header-actions button {
+    width: 100%;
+  }
+  
+  table {
+    min-width: 600px;
+  }
+  
+  mat-card-content {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
+@media (max-width: 576px) {
+  .tenant-list-container {
+    padding: 4px;
+  }
+  
+  mat-card-title {
+    font-size: 18px !important;
+  }
+  
+  .text-muted {
+    font-size: 12px !important;
+  }
+}

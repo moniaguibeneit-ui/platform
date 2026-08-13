@@ -23,6 +23,12 @@ export const navItems: NavItem[] = [
     bgcolor: 'secondary',
   },
   {
+    displayName: 'Categories',
+    iconName: 'category',
+    route: '/categories',
+    bgcolor: 'accent',
+  },
+  {
     displayName: 'Users',
     iconName: 'users',
     route: '/users',

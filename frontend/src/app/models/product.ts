@@ -5,9 +5,11 @@ export interface Product {
   description?: string;
   price: number;
   category?: string;
+  categoryId?: string;
   volume?: string;
   fragranceNotes?: string;
   inStock: boolean;
+  stockQuantity?: number;
   imageUrl?: string;
   images?: string[];
   tenantId?: string;

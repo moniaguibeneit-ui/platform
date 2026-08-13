@@ -63,3 +63,36 @@
   padding-top: 16px;
   gap: 10px;
 }
+
+/* Mobile responsive styles */
+@media (max-width: 768px) {
+  .user-form {
+    min-width: 100%;
+    gap: 8px;
+  }
+  
+  .row {
+    flex-direction: column;
+    gap: 8px;
+  }
+  
+  .half-width {
+    width: 100%;
+  }
+}
+
+@media (max-width: 576px) {
+  .dialog-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    
+    h2 {
+      font-size: 16px !important;
+    }
+  }
+  
+  .active-toggle {
+    padding: 10px 12px;
+  }
+}

@@ -109,3 +109,55 @@
         }
     }
 }
+
+/* Mobile responsive dashboard styles */
+@media (max-width: 768px) {
+  .mat-mdc-card {
+    margin-bottom: 12px;
+    border-radius: 12px;
+  }
+  
+  .mat-mdc-card-header {
+    padding: 12px 16px 0;
+  }
+  
+  .mat-mdc-card-content {
+    padding: 12px !important;
+  }
+  
+  .timeline {
+    .timeline-item {
+      height: auto;
+      flex-direction: column;
+      
+      .time {
+        min-width: auto;
+        padding: 4px 0;
+      }
+      
+      .desc {
+        padding: 4px 0;
+      }
+    }
+  }
+}
+
+@media (max-width: 576px) {
+  .mat-mdc-card {
+    margin-bottom: 8px;
+    border-radius: 10px;
+  }
+  
+  .mat-mdc-card-header {
+    padding: 10px 12px 0;
+  }
+  
+  .mat-mdc-card-content {
+    padding: 10px !important;
+  }
+  
+  .cart-btn {
+    right: 12px;
+    top: -18px;
+  }
+}

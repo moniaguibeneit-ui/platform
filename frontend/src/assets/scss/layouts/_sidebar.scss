@@ -280,3 +280,60 @@ body {
   flex-direction: column;
   height: 100%;
 }
+
+/* Mobile responsive sidebar styles */
+@media (max-width: 768px) {
+  .mat-drawer.sidebarNav {
+    width: 280px !important;
+    border-radius: 0 !important;
+    top: 0 !important;
+    left: 0 !important;
+    height: 100% !important;
+  }
+  
+  .branding {
+    padding: 16px;
+  }
+  
+  .sidebar-list {
+    .menu-list-item {
+      height: 48px;
+      padding: 8px 20px;
+      
+      .mdc-list-item__start {
+        width: 22px;
+        height: 22px;
+      }
+      
+      .hide-menu {
+        font-size: 14px;
+      }
+    }
+  }
+}
+
+@media (max-width: 576px) {
+  .mat-drawer.sidebarNav {
+    width: 260px !important;
+  }
+  
+  .branding {
+    padding: 12px;
+  }
+  
+  .sidebar-list {
+    .menu-list-item {
+      height: 44px;
+      padding: 6px 16px;
+      
+      .mdc-list-item__start {
+        width: 20px;
+        height: 20px;
+      }
+      
+      .hide-menu {
+        font-size: 13px;
+      }
+    }
+  }
+}

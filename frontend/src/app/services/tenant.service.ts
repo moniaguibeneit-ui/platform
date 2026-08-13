@@ -10,6 +10,7 @@ import { Tenant, TenantCreateRequest, TenantUpdateRequest } from '../models/tena
 export class TenantService {
   private http = inject(HttpClient);
   private apiUrl = `${environment.apiUrl}/admin/tenants`;
+  private publicApiUrl = `${environment.apiUrl}/tenants`;
 
   list(): Observable<Tenant[]> {
     return this.http.get<Tenant[]>(this.apiUrl);
@@ -19,12 +20,20 @@ export class TenantService {
     return this.http.get<Tenant>(`${this.apiUrl}/${id}`);
   }
 
+  getByDomain(domain: string): Observable<Tenant> {
+    return this.http.get<Tenant>(`${this.publicApiUrl}/domain/${domain}`);
+  }
+
   create(req: TenantCreateRequest): Observable<Tenant> {
     return this.http.post<Tenant>(this.apiUrl, req);
   }
 
   update(id: string, req: TenantUpdateRequest): Observable<Tenant> {
     return this.http.put<Tenant>(`${this.apiUrl}/${id}`, req);
+  }
+
+  updateProfile(id: string, req: TenantUpdateRequest): Observable<Tenant> {
+    return this.http.put<Tenant>(`${this.apiUrl}/${id}/profile`, req);
   }
 
   activate(id: string): Observable<Tenant> {

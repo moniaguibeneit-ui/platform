@@ -107,3 +107,78 @@
   top: -19px;
   right: 3px;
 }
+
+/* Mobile responsive styles for authentication */
+@media (max-width: 768px) {
+  .blank-layout-container {
+    padding: 16px;
+    align-items: flex-start;
+    padding-top: 40px;
+  }
+  
+  .boxed-auth {
+    max-width: 100%;
+    margin: 0;
+  }
+  
+  .auth-title {
+    font-size: 28px;
+    line-height: 36px;
+  }
+  
+  .or-border {
+    &:before,
+    &:after {
+      width: 60px;
+    }
+  }
+  
+  .custom-row {
+    margin-right: -4px;
+    margin-left: -4px;
+    
+    .col-2,
+    .col-12 {
+      padding-right: 4px;
+      padding-left: 4px;
+    }
+  }
+}
+
+@media (max-width: 576px) {
+  .blank-layout-container {
+    padding: 12px;
+    padding-top: 24px;
+  }
+  
+  .boxed-auth {
+    border-radius: 12px;
+  }
+  
+  mat-card-content {
+    padding: 20px !important;
+  }
+  
+  .auth-title {
+    font-size: 24px;
+    line-height: 32px;
+  }
+  
+  .or-border {
+    font-size: 14px;
+    
+    &:before,
+    &:after {
+      width: 40px;
+    }
+  }
+  
+  .custom-row {
+    flex-direction: column;
+    
+    .col-12 {
+      width: 100%;
+      margin-bottom: 8px;
+    }
+  }
+}

@@ -60,6 +60,14 @@ public class TenantService {
                 .orElseThrow(() -> new EntityNotFoundException("Tenant " + id + " not found"));
     }
 
+    @Transactional(readOnly = true)
+    public TenantResponse findByDomain(String domain) {
+        return tenantRepository.findByDomain(domain)
+                .filter(t -> t.getActive() && t.getStatus() == TenantStatus.ACTIVE)
+                .map(TenantResponse::from)
+                .orElseThrow(() -> new EntityNotFoundException("Store not found: " + domain));
+    }
+
     public TenantResponse create(TenantCreateRequest request) {
         if (tenantRepository.findByDomain(request.domain()).isPresent()) {
             throw new IllegalArgumentException("Domain already in use: " + request.domain());

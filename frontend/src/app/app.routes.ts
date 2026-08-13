@@ -5,19 +5,63 @@ import { ProductListComponent } from './pages/product-list/product-list.componen
 import { TenantListComponent } from './pages/tenant-list/tenant-list.component';
 import { UserListComponent } from './pages/user-list/user-list.component';
 import { OrderListComponent } from './pages/order-list/order-list.component';
+import { CategoryListComponent } from './pages/category-list/category-list.component';
 import { authGuard } from './guards/auth.guard';
+import { CheckoutComponent } from './pages/checkout/checkout.component';
+import { OrderConfirmationComponent } from './pages/order-confirmation/order-confirmation.component';
+import { OrderTrackingComponent } from './pages/order-tracking/order-tracking.component';
+import { StorefrontComponent } from './pages/storefront/storefront.component';
+import { HomepageComponent } from './pages/homepage/homepage.component';
+import { ProductDetailComponent } from './pages/product-detail/product-detail.component';
 
 export const routes: Routes = [
+  {
+    path: '',
+    component: BlankComponent,
+    children: [
+      {
+        path: '',
+        component: HomepageComponent,
+      },
+      {
+        path: 'store/:domain',
+        component: StorefrontComponent,
+      },
+      {
+        path: 'product/:id',
+        component: ProductDetailComponent,
+      },
+      {
+        path: 'authentication',
+        loadChildren: () =>
+          import('./pages/authentication/authentication.routes').then(
+            (m) => m.AuthenticationRoutes
+          ),
+      },
+      // Public customer routes
+      {
+        path: 'checkout',
+        component: CheckoutComponent,
+      },
+      {
+        path: 'order-confirmation/:orderNumber',
+        component: OrderConfirmationComponent,
+      },
+      {
+        path: 'order-tracking/:orderNumber',
+        component: OrderTrackingComponent,
+      },
+      {
+        path: 'order-tracking',
+        component: OrderTrackingComponent,
+      },
+    ],
+  },
   {
     path: '',
     component: FullComponent,
     canActivate: [authGuard],
     children: [
-      {
-        path: '',
-        redirectTo: '/dashboard',
-        pathMatch: 'full',
-      },
       {
         path: 'dashboard',
         loadChildren: () =>
@@ -30,6 +74,10 @@ export const routes: Routes = [
       {
         path: 'products',
         component: ProductListComponent,
+      },
+      {
+        path: 'categories',
+        component: CategoryListComponent,
       },
       {
         path: 'users',
@@ -54,20 +102,7 @@ export const routes: Routes = [
     ],
   },
   {
-    path: '',
-    component: BlankComponent,
-    children: [
-      {
-        path: 'authentication',
-        loadChildren: () =>
-          import('./pages/authentication/authentication.routes').then(
-            (m) => m.AuthenticationRoutes
-          ),
-      },
-    ],
-  },
-  {
     path: '**',
-    redirectTo: 'authentication/error',
+    redirectTo: '',
   },
 ];
